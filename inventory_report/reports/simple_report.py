@@ -24,9 +24,19 @@ class SimpleReport(Report):
                 product.expiration_date, '%Y-%m-%d')
             > datetime.now()
         )
+
+        inventory_count = {}
+
+        for inventory in self.inventories:
+            for product in inventory.data:
+                if product.company_name in inventory_count:
+                    inventory_count[product.company_name] += 1
+                else:
+                    inventory_count[product.company_name] = 1
+
         company_with_largest_inventory = max(
-            self.inventories, key=lambda inventory: len(inventory.data)
-        ).data[0].company_name
+            inventory_count, key=inventory_count.get
+        )
 
         return (
             f"Oldest manufacturing date: {oldest_manufacturing}\n "
